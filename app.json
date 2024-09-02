@@ -1,0 +1,40 @@
+{
+  "id": "a922182e-3530-4b6c-894d-8921cf3cbd78",
+  "name": "ALProject6",
+  "publisher": "Default Publisher",
+  "version": "1.0.0.0",
+  "brief": "",
+  "description": "",
+  "privacyStatement": "",
+  "EULA": "",
+  "help": "",
+  "url": "",
+  "logo": "",
+ 
+  "screenshots": [],
+  "platform": "1.0.0.0",
+  "application": "24.0.0.0",
+  "dependencies": [
+    {
+    "appId" : "56f2dbc2-5cb4-4f0c-89f5-8ae8e5bf248c",
+    "publisher": "GSUS Star Technologie",
+    "version": "2.2.2.2",
+    "name": "GSUS"
+  }
+],
+  "idRanges": [
+    {
+      "from": 57900,
+      "to": 58000
+    }
+  ],
+  "resourceExposurePolicy": {
+    "allowDebugging": true,
+    "allowDownloadingSource": true,
+    "includeSourceInSymbolFile": true
+  },
+  "runtime": "13.0",
+  "features": [
+    "NoImplicitWith"
+  ]
+}
