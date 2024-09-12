@@ -50,12 +50,6 @@ codeunit 57905 TO
 
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"TransferOrder-Post Shipment", 'OnAfterInvtAdjmt', '', false, false)]
-    // NOT WORKING PROCEDURE
-    // local procedure OnBeforeGenNextNo(var TransferShipmentHeader: Record "Transfer Shipment Header"; TransferHeader: Record "Transfer Header")
-    // begin
-    //     TransferShipmentHeader.TransferDate := TransferHeader.TransferDate;
-    //     TransferShipmentHeader.Modify();
-    // end;
     local procedure OnAfterInvtAdjmt(var TransferHeader: Record "Transfer Header"; var TransferShipmentHeader: Record "Transfer Shipment Header")
     begin
         TransferShipmentHeader.TransferDate := TransferHeader.TransferDate;
@@ -81,6 +75,34 @@ codeunit 57905 TO
     begin
         TransRcptLine.TransferDate := TransLine.TransferDate;
         TransRcptLine.Modify();
+    end;
+
+
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"TransferOrder-Post Shipment", 'OnAfterCreateItemJnlLine', '', false, false)]
+    local procedure OnAfterCreateItemJnlLine(var ItemJournalLine: Record "Item Journal Line"; TransferLine: Record "Transfer Line"; TransferShipmentHeader: Record "Transfer Shipment Header"; TransferShipmentLine: Record "Transfer Shipment Line")
+    begin
+        ItemJournalLine.TransferDate := TransferLine.TransferDate;
+    end;
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"TransferOrder-Post Receipt", 'OnBeforePostItemJournalLine', '', false, false)]
+    local procedure OnBeforePostItemJournalLine(var ItemJournalLine: Record "Item Journal Line"; TransferLine: Record "Transfer Line"; TransferReceiptHeader: Record "Transfer Receipt Header"; TransferReceiptLine: Record "Transfer Receipt Line"; CommitIsSuppressed: Boolean; TransLine: Record "Transfer Line"; PostedWhseRcptHeader: Record "Posted Whse. Receipt Header")
+    begin
+        ItemJournalLine.TransferDate := TransferLine.TransferDate;
+    end;
+
+
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::"Item Jnl.-Post Line", 'OnAfterInitItemLedgEntry', '', false, false)]
+    local procedure OnAfterInitItemLedgEntry(var NewItemLedgEntry: Record "Item Ledger Entry"; var ItemJournalLine: Record "Item Journal Line"; var ItemLedgEntryNo: Integer)
+    begin
+        NewItemLedgEntry.TransferDate := ItemJournalLine.TransferDate;
+    end;
+
+    [EventSubscriber(ObjectType::Table, Database::"Transfer Line", 'OnAfterSetItemLedgerEntryFilters', '', false, false)]
+    local procedure OnAfterSetItemLedgerEntryFilters(var ItemLedgEntry: Record "Item Ledger Entry"; TransferLine: Record "Transfer Line")
+    begin
+        ItemLedgEntry.TransferDate := TransferLine.TransferDate;
+        ItemLedgEntry.Modify();
     end;
 
 }
@@ -330,5 +352,90 @@ pageextension 57919 TRL extends "Posted Transfer Rcpt. Subform"
     }
 
     var
+        myInt: codeunit 22;
+}
+
+tableextension 57921 ILE extends "Item Ledger Entry"
+{
+    fields
+    {
+        field(5010; TransferDate; Date)
+        {
+            Caption = 'Transfer Date';
+            DataClassification = ToBeClassified;
+        }
+
+    }
+
+    keys
+    {
+        // Add changes to keys here
+    }
+
+    fieldgroups
+    {
+        // Add changes to field groups here
+    }
+
+    var
         myInt: Integer;
+    // trigger OnInsert()
+    // var
+    //     myInt: Integer;
+    // begin
+    //     Error('Inserted');
+    // end;
+
+    // trigger OnModify()
+    // var
+    //     myInt: Integer;
+    // begin
+    //     Error('Modify');
+    // end;
+}
+pageextension 57921 ILE extends "Item Ledger Entries"
+{
+    layout
+    {
+        addafter("Entry No.")
+        {
+            field(TransferDate; Rec.TransferDate)
+            {
+                ApplicationArea = ALL;
+            }
+        }
+    }
+
+    actions
+    {
+        // Add changes to page actions here
+    }
+
+    var
+        myInt: Integer;
+
+}
+
+tableextension 57922 IJL extends "Item Journal Line"
+{
+    fields
+    {
+        field(5010; TransferDate; Date)
+        {
+            DataClassification = ToBeClassified;
+        }
+    }
+
+    keys
+    {
+        // Add changes to keys here
+    }
+
+    fieldgroups
+    {
+        // Add changes to field groups here
+    }
+
+    var
+        myInt: page "Item Journal";
 }

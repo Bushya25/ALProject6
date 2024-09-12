@@ -6,7 +6,7 @@
             "request": "launch",
             "type": "al",
             "environmentType": "Sandbox",
-            "environmentName": "Development",
+            "environmentName": "training",
             "startupObjectId": 57900,
             "tenant": "33672e45-e6a6-44bf-84e2-46781814c4c8",
             "startupObjectType": "Query",
